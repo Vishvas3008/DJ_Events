@@ -7,6 +7,7 @@ export default function Document() {
       <body>
         <Main />
         <NextScript />
+        <div id='model-root'></div>
       </body>
     </Html>
   )
