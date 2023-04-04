@@ -6,8 +6,9 @@ import { API_URL } from "@/config";
 import styles from "../../styles/Form.module.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { parseCookies } from "../../helpers/index";
 
-export default function AddEvents() {
+export default function AddEvents({token}) {
   const [values, setValues] = useState({
     name: "",
     performers: "",
@@ -130,4 +131,14 @@ export default function AddEvents() {
       </form>
     </Layout>
   );
+}
+export async function getServerSideProps({ req }){
+
+  const { token } = parseCookies(req);
+return {
+  props:{
+    token,
+  }
+}
+
 }

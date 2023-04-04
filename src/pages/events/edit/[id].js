@@ -11,14 +11,17 @@ import Image from "next/image";
 import { FaImage } from "react-icons/fa";
 import Model from "@/Components/Model";
 import ImageUpload from "@/Components/ImageUpload";
+import { parseCookies } from "@/helpers";
 
 export default function AddEvents({
   event: {
     data: { attributes: event, id },
   },
+  token,
 }) {
-  console.log("event from id", event);
-  console.log("id", id);
+  // console.log("event from id", event);
+  // console.log("id", id);
+  console.log(token);
   const [values, setValues] = useState({
     name: event.name,
     performers: event.performers,
@@ -47,6 +50,7 @@ export default function AddEvents({
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({ data: values }),
     });
@@ -64,7 +68,7 @@ export default function AddEvents({
   };
   const imageUploaded = async () => {
     const res = await fetch(`${API_URL}/api/events/${id}?populate=*`);
-    const {data} = await res.json();
+    const { data } = await res.json();
     setImagepreview(
       data.attributes.image.data.attributes.formats.thumbnail.url
     );
@@ -174,14 +178,17 @@ export default function AddEvents({
   );
 }
 
-export async function getServerSideProps({ query: { id } }) {
+export async function getServerSideProps({ query: { id }, req }) {
   const res = await fetch(`${API_URL}/api/events/${id}?populate=*`);
   const event = await res.json();
   //   console.log(event);
+  const { token } = parseCookies(req);
 
+  console.log(req.headers.cookie);
   return {
     props: {
       event,
+      token,
     },
   };
 }

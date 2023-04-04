@@ -1,16 +1,18 @@
-import { parseCookies } from '@/helpers/index'
-import { useRouter } from 'next/router'
-import Layout from '@/components/Layout'
-import DashboardEvent from '@/components/DashboardEvent'
-import { API_URL } from '@/config/index'
-import styles from '@/styles/Dashboard.module.css'
+import { parseCookies } from "../../helpers/index";
+import { useRouter } from "next/router";
+import Layout from "../../Components/Layout";
+import DashboardEvent from "../../Components/DashboardEvent";
+import { API_URL } from "../../config/index";
+import styles from "../../styles/Dashboard.module.css";
 
-export default function DashboardPage({ events, token }) {
+export default function DashboardPage({ event, token }) {
+  console.log(event);
+  // return <h1>Deshboard</h1>;
   const router = useRouter()
 
   const deleteEvent = async (id) => {
     if (confirm('Are you sure?')) {
-      const res = await fetch(`${API_URL}/events/${id}`, {
+      const res = await fetch(`${API_URL}/api/events/${id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -33,7 +35,7 @@ export default function DashboardPage({ events, token }) {
         <h1>Dashboard</h1>
         <h3>My Events</h3>
 
-        {events.map((evt) => (
+        {event.map((evt) => (
           <DashboardEvent key={evt.id} evt={evt} handleDelete={deleteEvent} />
         ))}
       </div>
@@ -42,21 +44,32 @@ export default function DashboardPage({ events, token }) {
 }
 
 export async function getServerSideProps({ req }) {
-  const { token } = parseCookies(req)
+  const { token } = parseCookies(req);
 
-  const res = await fetch(`${API_URL}/events/me`, {
-    method: 'GET',
+  const res = await fetch(`${API_URL}/api/users/me?populate=*`, {
+    method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
     },
-  })
+  });
+  const event = await res.json();
+  console.log(event);
 
-  const events = await res.json()
+  // const alleventsres = await fetch(`${API_URL}/api/events?populate=*`);
+  // const allevents = await alleventsres.json();
 
+  // // console.log(allevents.data);
+  // const eventsID = events.events.map((evt) => {
+  //   return evt.id;
+  // });
+  // const event = allevents.data.filter((evt) => eventsID.includes(evt.id));
+  // console.log(event);
+  // console.log(eventsID);
+  // console.log(events.events);
   return {
     props: {
-      events,
+      event : event.events,
       token,
     },
-  }
+  };
 }
