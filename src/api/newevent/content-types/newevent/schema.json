@@ -1,0 +1,25 @@
+{
+  "kind": "collectionType",
+  "collectionName": "newevents",
+  "info": {
+    "singularName": "newevent",
+    "pluralName": "newevents",
+    "displayName": "newevent"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name"
+    },
+    "true": {
+      "type": "boolean"
+    }
+  }
+}
